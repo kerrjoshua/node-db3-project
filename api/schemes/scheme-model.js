@@ -15,17 +15,20 @@ async function find() { // EXERCISE A
 
     2A- When you have a grasp on the query go ahead and build it in Knex.
     Return from this function the resulting dataset.
-  */
-const result = await db('schemes').select('sc.*')
-.count('st.step_id as number_of_steps')
-.from('schemes as sc')
-.leftJoin('steps as st', 'sc.scheme_id', '=', 'st.scheme_id')
-.groupBy('sc.scheme_id')
-.orderBy('sc.scheme_id')
+  */try {
+    const result = await db('schemes').select('sc.*')
+      .count('st.step_id as number_of_steps')
+      .from('schemes as sc')
+      .leftJoin('steps as st', 'sc.scheme_id', '=', 'st.scheme_id')
+      .groupBy('sc.scheme_id')
+      .orderBy('sc.scheme_id')
 
-console.log(result);
+    return result
+  }
+  catch (err) {
+    return err
+  }
 
- return result
 }
 async function findById(scheme_id) { // EXERCISE B
   /*
@@ -43,79 +46,88 @@ async function findById(scheme_id) { // EXERCISE B
     2B- When you have a grasp on the query go ahead and build it in Knex
     making it parametric: instead of a literal `1` you should use `scheme_id`.
 */
-  const scheme = await db('steps')
-    .select('sc.scheme_name', 'st.*')
-    .from('schemes as sc')
-    .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
-    .where('sc.scheme_id', scheme_id)
-    .orderBy('st.step_number')
-    
+
+
+
+  /*
   
-/*
-
-    3B- Test in Postman and see that the resulting data does not look like a scheme,
-    but more like an array of steps each including scheme information:
-
-      [
-        {
-          "scheme_id": 1,
-          "scheme_name": "World Domination",
-          "step_id": 2,
-          "step_number": 1,
-          "instructions": "solve prime number theory"
-        },
-        {
-          "scheme_id": 1,
-          "scheme_name": "World Domination",
-          "step_id": 1,
-          "step_number": 2,
-          "instructions": "crack cyber security"
-        },
-        // etc
-      ]
-
-    4B- Using the array obtained and vanilla JavaScript, create an object with
-    the structure below, for the case _when steps exist_ for a given `scheme_id`:
-
-      {
-        "scheme_id": 1,
-        "scheme_name": "World Domination",
-        "steps": [
+      3B- Test in Postman and see that the resulting data does not look like a scheme,
+      but more like an array of steps each including scheme information:
+  
+        [
           {
+            "scheme_id": 1,
+            "scheme_name": "World Domination",
             "step_id": 2,
             "step_number": 1,
             "instructions": "solve prime number theory"
           },
           {
+            "scheme_id": 1,
+            "scheme_name": "World Domination",
             "step_id": 1,
             "step_number": 2,
             "instructions": "crack cyber security"
           },
           // etc
         ]
+  
+      4B- Using the array obtained and vanilla JavaScript, create an object with
+      the structure below, for the case _when steps exist_ for a given `scheme_id`:
+  
+        {
+          "scheme_id": 1,
+          "scheme_name": "World Domination",
+          "steps": [
+            {
+              "step_id": 2,
+              "step_number": 1,
+              "instructions": "solve prime number theory"
+            },
+            {
+              "step_id": 1,
+              "step_number": 2,
+              "instructions": "crack cyber security"
+            },
+            // etc
+          ]
+        }
+  
+      5B- This is what the result should look like _if there are no steps_ for a `scheme_id`:
+  
+        {
+          "scheme_id": 7,
+          "scheme_name": "Have Fun!",
+          "steps": []
+        }
+    */
+
+  const scheme = await db('schemes as sc')
+    .select('sc.scheme_name', 'st.*')
+    .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
+    .where('sc.scheme_id', scheme_id)
+    .orderBy('st.step_number')
+
+
+  if (scheme[0]) {
+    const result = scheme.reduce((acc, row) => {
+      if (row.step_id !== null) {
+        acc.steps.push({ step_id: row.step_id, step_number: row.step_number, instructions: row.instructions })
       }
-
-    5B- This is what the result should look like _if there are no steps_ for a `scheme_id`:
-
+      return acc
+    },
       {
-        "scheme_id": 7,
-        "scheme_name": "Have Fun!",
-        "steps": []
-      }
-  */
- const result = scheme.reduce((acc, row) => {
-  if (row.step_id !== null){
-  acc.steps.push({step_id: row.step_id, step_number: row.step_number, instructions: row.instructions})
+        scheme_id: scheme[0].scheme_id,
+        scheme_name: scheme[0].scheme_name,
+        steps: []
+      })
+    return result
   }
-  return acc
- }, 
- { 
-  scheme_id: scheme[0].scheme_id, 
-  scheme_name: scheme[0].scheme_name, 
-  steps: [] 
-})
 
-  return result
+  return null;
+
+
+
 }
 
 function findSteps(scheme_id) { // EXERCISE C
