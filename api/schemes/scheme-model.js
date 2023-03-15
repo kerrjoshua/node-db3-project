@@ -1,4 +1,5 @@
-function find() { // EXERCISE A
+const db = require('../../data/db-config')
+async function find() { // EXERCISE A
   /*
     1A- Study the SQL query below running it in SQLite Studio against `data/schemes.db3`.
     What happens if we change from a LEFT join to an INNER join?
@@ -15,9 +16,18 @@ function find() { // EXERCISE A
     2A- When you have a grasp on the query go ahead and build it in Knex.
     Return from this function the resulting dataset.
   */
-}
+const result = await db('schemes').select('sc.*')
+.count('st.step_id as number_of_steps')
+.from('schemes as sc')
+.leftJoin('steps as st', 'sc.scheme_id', '=', 'st.scheme_id')
+.groupBy('sc.scheme_id')
+.orderBy('sc.scheme_id')
 
-function findById(scheme_id) { // EXERCISE B
+console.log(result);
+
+ return result
+}
+async function findById(scheme_id) { // EXERCISE B
   /*
     1B- Study the SQL query below running it in SQLite Studio against `data/schemes.db3`:
 
@@ -32,6 +42,16 @@ function findById(scheme_id) { // EXERCISE B
 
     2B- When you have a grasp on the query go ahead and build it in Knex
     making it parametric: instead of a literal `1` you should use `scheme_id`.
+*/
+  const scheme = await db('steps')
+    .select('sc.scheme_name', 'st.*')
+    .from('schemes as sc')
+    .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
+    .where('sc.scheme_id', scheme_id)
+    .orderBy('st.step_number')
+    
+  
+/*
 
     3B- Test in Postman and see that the resulting data does not look like a scheme,
     but more like an array of steps each including scheme information:
@@ -83,6 +103,19 @@ function findById(scheme_id) { // EXERCISE B
         "steps": []
       }
   */
+ const result = scheme.reduce((acc, row) => {
+  if (row.step_id !== null){
+  acc.steps.push({step_id: row.step_id, step_number: row.step_number, instructions: row.instructions})
+  }
+  return acc
+ }, 
+ { 
+  scheme_id: scheme[0].scheme_id, 
+  scheme_name: scheme[0].scheme_name, 
+  steps: [] 
+})
+
+  return result
 }
 
 function findSteps(scheme_id) { // EXERCISE C

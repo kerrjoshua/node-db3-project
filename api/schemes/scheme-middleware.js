@@ -7,7 +7,8 @@
   }
 */
 const checkSchemeId = (req, res, next) => {
-
+  console.log('checkSchemeId')
+  next()
 }
 
 /*
@@ -19,7 +20,8 @@ const checkSchemeId = (req, res, next) => {
   }
 */
 const validateScheme = (req, res, next) => {
-
+console.log('validateScheme')
+next()
 }
 
 /*
@@ -32,7 +34,8 @@ const validateScheme = (req, res, next) => {
   }
 */
 const validateStep = (req, res, next) => {
-
+console.log('validateStep')
+next()
 }
 
 module.exports = {
