@@ -108,7 +108,6 @@ async function findById(scheme_id) { // EXERCISE B
     .where('sc.scheme_id', scheme_id)
     .orderBy('st.step_number')
 
-    console.log(scheme[0].scheme_id)
 
   if (scheme[0]) {
     const result = scheme.reduce((acc, row) => {
@@ -198,6 +197,10 @@ function addStep(scheme_id, step) { // EXERCISE E
     and resolves to _all the steps_ belonging to the given `scheme_id`,
     including the newly created one.
   */
+ const hello = new Promise((resolve) => {
+  resolve('Hello!')
+ })
+ return hello
 }
 
 module.exports = {
