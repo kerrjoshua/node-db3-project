@@ -103,11 +103,12 @@ async function findById(scheme_id) { // EXERCISE B
     */
 
   const scheme = await db('schemes as sc')
-    .select('sc.scheme_name', 'st.*')
+    .select('sc.scheme_name', 'st.*', 'sc.scheme_id' )
     .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
     .where('sc.scheme_id', scheme_id)
     .orderBy('st.step_number')
 
+    console.log(scheme[0].scheme_id)
 
   if (scheme[0]) {
     const result = scheme.reduce((acc, row) => {
@@ -182,13 +183,13 @@ async function findSteps(scheme_id) { // EXERCISE C
 
 }
 
-function add(scheme) { // EXERCISE D
+async function add(scheme) { // EXERCISE D
   /*
     1D- This function creates a new scheme and resolves to _the newly created scheme_.
   */
- const hello = new Promise( (resolve, reject) => { //eslint-disable-line
-  resolve('hello from add(scheme)')}) 
- return hello
+ const [id] = await db('schemes').insert(scheme)
+ return await findById(id);
+
 }
 
 function addStep(scheme_id, step) { // EXERCISE E
