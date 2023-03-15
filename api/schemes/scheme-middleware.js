@@ -13,11 +13,11 @@ const checkSchemeId = (req, res, next) => {
   Scheme.findById(scheme_id)
     .then(scheme => {
       if (!scheme) {
-        next({status: 404, message: `scheme with scheme_id ${scheme_id} not found`})
+        next({ status: 404, message: `scheme with scheme_id ${scheme_id} not found` })
       } else {
         req.scheme = scheme;
         next()
-      } 
+      }
     })
     .catch(next)
 }
@@ -31,8 +31,14 @@ const checkSchemeId = (req, res, next) => {
   }
 */
 const validateScheme = (req, res, next) => {
-console.log('validateScheme')
-next()
+  const { scheme_name } = req.body
+  if (!scheme_name ||
+    typeof scheme_name !== 'string') {
+    next({ status: 400, message: 'invalid scheme_name' })
+  }
+  else {
+    next()
+  }
 }
 
 /*
@@ -45,8 +51,8 @@ next()
   }
 */
 const validateStep = (req, res, next) => {
-console.log('validateStep')
-next()
+  console.log('validateStep')
+  next()
 }
 
 module.exports = {

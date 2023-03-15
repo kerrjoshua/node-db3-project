@@ -186,6 +186,9 @@ function add(scheme) { // EXERCISE D
   /*
     1D- This function creates a new scheme and resolves to _the newly created scheme_.
   */
+ const hello = new Promise( (resolve, reject) => { //eslint-disable-line
+  resolve('hello from add(scheme)')}) 
+ return hello
 }
 
 function addStep(scheme_id, step) { // EXERCISE E
