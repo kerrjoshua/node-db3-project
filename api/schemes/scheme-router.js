@@ -52,7 +52,7 @@ router.get('/', (req, res, next) => {
     ]
   }
 */
-router.get('/:scheme_id', checkSchemeId, (req, res, next) => {
+router.get('/:scheme_id', checkSchemeId, (req, res) => {
   res.json(req.scheme)
 })
 
